@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="个人展示网站 - 展示头像、简介、技能、项目与博客" />
+  <title>个人展示网站</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 背景装饰 -->
+  <canvas class="bg-canvas" id="bg-canvas"></canvas>
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+
+  <!-- 顶部导航 -->
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="#">My<span>Portfolio</span></a>
+      <nav class="nav-links">
+        <a href="#about">关于</a>
+        <a href="#skills">技能</a>
+        <a href="#projects">项目</a>
+        <a href="#blog">博客</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero：头像 / 姓名 / 简介 / 联系方式 / 简历下载 -->
+    <section id="about" class="hero">
+      <div class="container">
+        <div class="hero-avatar" id="hero-avatar"></div>
+        <h1 id="hero-name" class="gradient-text">欢迎访问我的主页</h1>
+        <p class="bio" id="hero-bio"></p>
+        <div class="hero-meta" id="hero-meta"></div>
+        <a class="btn" id="resume-btn" href="#" download style="display:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+          下载简历 PDF
+        </a>
+      </div>
+    </section>
+
+    <!-- 技能 -->
+    <section id="skills" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="gradient-text">我的技能</h2>
+          <p class="sub">Skills &amp; Expertise</p>
+        </div>
+        <div id="skills-list" class="skills-grid"></div>
+      </div>
+    </section>
+
+    <!-- 项目 -->
+    <section id="projects" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="gradient-text">项目作品</h2>
+          <p class="sub">Projects</p>
+        </div>
+        <div id="projects-list" class="cards-grid"></div>
+      </div>
+    </section>
+
+    <!-- 博客 -->
+    <section id="blog" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="gradient-text">博客文章</h2>
+          <p class="sub">Blog</p>
+        </div>
+        <div id="blog-list" class="cards-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="footer-year"></span> 个人展示网站 · 由纯前端技术驱动 · 数据存储于浏览器本地</p>
+    </div>
+  </footer>
+
+  <!-- 详情弹窗（项目 / 博客 Markdown 渲染内容） -->
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close" aria-label="关闭">&times;</button>
+      <h2 id="modal-title"></h2>
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="md-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- 依赖：本地打包的 Markdown 解析库与净化库 -->
+  <script src="data/marked.min.js"></script>
+  <script src="data/purify.min.js"></script>
+  <!-- 数据层 / Markdown 封装 / 种子数据 / 前台逻辑 -->
+  <script src="data/db.js"></script>
+  <script src="data/markdown.js"></script>
+  <script src="data/seed.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

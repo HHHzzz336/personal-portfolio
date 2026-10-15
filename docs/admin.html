@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>管理后台 - 个人展示网站</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="admin-body">
+  <!-- 背景装饰 -->
+  <canvas class="bg-canvas" id="bg-canvas"></canvas>
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+
+  <div class="admin-layout">
+    <!-- 侧边导航 -->
+    <aside class="admin-sidebar">
+      <div class="logo">⚙️ 管理后台</div>
+      <button class="nav-item active" data-panel="personal">👤 基本信息</button>
+      <button class="nav-item" data-panel="skills">⚡ 技能管理</button>
+      <button class="nav-item" data-panel="projects">📁 项目管理</button>
+      <button class="nav-item" data-panel="blogs">📝 博客管理</button>
+      <div class="footer-note">数据存储于浏览器本地<br />IndexedDB + localStorage<br />无需服务器</div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="admin-main">
+      <!-- ===== 基本信息 ===== -->
+      <section class="admin-panel active" id="panel-personal">
+        <div class="panel-head">
+          <h1>基本信息</h1>
+          <p>上传头像、编辑个人简介与上传 PDF 简历，保存后前台立即生效。</p>
+        </div>
+
+        <div class="form-card">
+          <h3>头像（图片上传）</h3>
+          <div class="upload-avatar">
+            <div class="preview" id="avatar-preview"><div class="placeholder">👤</div></div>
+            <div>
+              <input type="file" id="avatar-input" accept="image/*" hidden />
+              <button class="btn btn-outline btn-sm" id="avatar-upload-btn">选择图片上传</button>
+              <div class="hint">支持 jpg / png / webp / gif，图片会保存在浏览器本地（IndexedDB）</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>个人简介</h3>
+          <div class="field"><label>姓名</label><input type="text" id="p-name" placeholder="请输入姓名" /></div>
+          <div class="field"><label>个人简介</label><textarea id="p-bio" placeholder="一句话介绍自己"></textarea></div>
+          <div class="form-row">
+            <div class="field"><label>邮箱</label><input type="email" id="p-email" placeholder="you@example.com" /></div>
+            <div class="field"><label>所在城市</label><input type="text" id="p-location" placeholder="例如：北京" /></div>
+            <div class="field"><label>GitHub 主页</label><input type="url" id="p-github" placeholder="https://github.com/xxx" /></div>
+            <div class="field"><label>个人网站</label><input type="url" id="p-website" placeholder="https://example.com" /></div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>简历 PDF</h3>
+          <div class="file-box">
+            <div class="file-info">
+              <span>📄</span>
+              <span class="name" id="resume-name">尚未上传简历</span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <input type="file" id="resume-input" accept="application/pdf" hidden />
+              <button class="btn btn-outline btn-sm" id="resume-upload-btn">上传 PDF</button>
+              <button class="btn btn-danger btn-sm" id="resume-remove-btn" style="display:none">删除</button>
+            </div>
+          </div>
+          <div class="hint">上传成功后，前台首页会出现「下载简历 PDF」按钮。</div>
+        </div>
+
+        <button class="btn" id="personal-save">💾 保存基本信息</button>
+      </section>
+
+      <!-- ===== 技能管理 ===== -->
+      <section class="admin-panel" id="panel-skills">
+        <div class="panel-head">
+          <h1>技能管理</h1>
+          <p>增删改技能条目，熟练度会在前台以进度条展示。</p>
+        </div>
+
+        <div class="form-card">
+          <h3>新增技能</h3>
+          <div class="form-row">
+            <div class="field"><label>技能名称</label><input type="text" id="skill-name" placeholder="例如：JavaScript" /></div>
+            <div class="field"><label>熟练度：<span id="skill-level-val">80</span>%</label><input type="range" id="skill-level" min="0" max="100" value="80" /></div>
+          </div>
+          <button class="btn btn-sm" id="skill-add">➕ 添加技能</button>
+        </div>
+
+        <div id="skills-admin-list"></div>
+      </section>
+
+      <!-- ===== 项目管理 ===== -->
+      <section class="admin-panel" id="panel-projects">
+        <div class="panel-head">
+          <h1>项目管理</h1>
+          <p>新建 / 编辑 / 删除项目，正文使用 Markdown 分屏编辑器。</p>
+        </div>
+
+        <!-- 列表视图 -->
+        <div id="projects-list-view">
+          <button class="btn" id="project-new" style="margin-bottom:16px;">➕ 新建项目</button>
+          <div id="projects-admin-list"></div>
+        </div>
+
+        <!-- 编辑器视图 -->
+        <div id="project-editor" style="display:none;">
+          <button class="btn btn-ghost btn-sm" data-back="projects">← 返回项目列表</button>
+          <div class="form-card">
+            <div class="form-row">
+              <div class="field"><label>项目标题</label><input type="text" id="project-title" placeholder="项目名称" /></div>
+              <div class="field"><label>项目链接（可选）</label><input type="url" id="project-link" placeholder="https://..." /></div>
+            </div>
+            <div class="field"><label>项目简介</label><textarea id="project-summary" placeholder="一句话概括这个项目"></textarea></div>
+            <div class="field"><label>标签（逗号分隔）</label><input type="text" id="project-tags" placeholder="HTML, CSS, JavaScript" /></div>
+          </div>
+          <div class="form-card">
+            <h3>Markdown 内容（左侧编写，右侧实时预览）</h3>
+            <div class="editor-layout">
+              <div class="editor-pane">
+                <div class="pane-title">Markdown 源码</div>
+                <textarea id="project-md" spellcheck="false" placeholder="# 项目标题&#10;&#10;在这里编写 Markdown ..."></textarea>
+              </div>
+              <div class="editor-pane">
+                <div class="pane-title">实时预览</div>
+                <div class="preview-pane md-body" id="project-md-preview"></div>
+              </div>
+            </div>
+          </div>
+          <div class="editor-actions">
+            <button class="btn" id="project-save">💾 保存项目</button>
+            <button class="btn btn-ghost" data-back="projects">取消</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 博客管理 ===== -->
+      <section class="admin-panel" id="panel-blogs">
+        <div class="panel-head">
+          <h1>博客管理</h1>
+          <p>新建 / 编辑 / 删除博客文章，正文使用 Markdown 分屏编辑器。</p>
+        </div>
+
+        <div id="blogs-list-view">
+          <button class="btn" id="blog-new" style="margin-bottom:16px;">➕ 新建博客</button>
+          <div id="blogs-admin-list"></div>
+        </div>
+
+        <div id="blog-editor" style="display:none;">
+          <button class="btn btn-ghost btn-sm" data-back="blogs">← 返回博客列表</button>
+          <div class="form-card">
+            <div class="field"><label>文章标题</label><input type="text" id="blog-title" placeholder="文章标题" /></div>
+            <div class="field"><label>摘要</label><textarea id="blog-summary" placeholder="文章摘要"></textarea></div>
+            <div class="field"><label>标签（逗号分隔）</label><input type="text" id="blog-tags" placeholder="教程, 前端" /></div>
+          </div>
+          <div class="form-card">
+            <h3>Markdown 内容（左侧编写，右侧实时预览）</h3>
+            <div class="editor-layout">
+              <div class="editor-pane">
+                <div class="pane-title">Markdown 源码</div>
+                <textarea id="blog-md" spellcheck="false" placeholder="# 文章标题&#10;&#10;在这里编写 Markdown ..."></textarea>
+              </div>
+              <div class="editor-pane">
+                <div class="pane-title">实时预览</div>
+                <div class="preview-pane md-body" id="blog-md-preview"></div>
+              </div>
+            </div>
+          </div>
+          <div class="editor-actions">
+            <button class="btn" id="blog-save">💾 保存博客</button>
+            <button class="btn btn-ghost" data-back="blogs">取消</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 全局提示 -->
+  <div class="toast" id="toast"></div>
+
+  <!-- 依赖 -->
+  <script src="data/marked.min.js"></script>
+  <script src="data/purify.min.js"></script>
+  <script src="data/db.js"></script>
+  <script src="data/markdown.js"></script>
+  <script src="data/seed.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
